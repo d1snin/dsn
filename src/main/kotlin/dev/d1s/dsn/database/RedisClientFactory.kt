@@ -30,7 +30,7 @@ interface RedisClientFactory {
 
     val redis: RedisClient
 
-    fun connect()
+    suspend fun connect()
 }
 
 class RedisClientFactoryImpl : RedisClientFactory, KoinComponent {
@@ -43,13 +43,21 @@ class RedisClientFactoryImpl : RedisClientFactory, KoinComponent {
 
     override val redis get() = internalRedis ?: error("Redis client is not initialized.")
 
-    override fun connect() {
+    override suspend fun connect() {
         val endpoint = Endpoint.from(config.redis.endpoint)
 
         log.i {
             "Connecting to Redis endpoint $endpoint"
         }
 
-        internalRedis = newClient(endpoint)
+        val client = newClient(endpoint)
+
+        val clientId = client.clientId()
+
+        log.i {
+            "Connected to Redis endpoint with client ID $clientId"
+        }
+
+        internalRedis = client
     }
 }
