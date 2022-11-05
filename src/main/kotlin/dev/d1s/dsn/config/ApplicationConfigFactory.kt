@@ -17,8 +17,10 @@
 package dev.d1s.dsn.config
 
 import com.sksamuel.hoplite.ConfigLoaderBuilder
-import com.sksamuel.hoplite.addResourceSource
+import com.sksamuel.hoplite.sources.EnvironmentVariablesPropertySource
 import org.lighthousegames.logging.logging
+
+private const val ENV_VAR_PREFIX = "DSN."
 
 interface ApplicationConfigFactory {
 
@@ -33,17 +35,18 @@ class ApplicationConfigFactoryImpl : ApplicationConfigFactory {
 
     private fun loadConfig(): ApplicationConfig {
         log.i {
-            "Loading config from $RESOURCE_PATH..."
+            "Loading config from environment variables..."
         }
 
+        val propertySource = EnvironmentVariablesPropertySource(
+            useUnderscoresAsSeparator = true,
+            allowUppercaseNames = true,
+            prefix = ENV_VAR_PREFIX
+        )
+
         return ConfigLoaderBuilder.default()
-            .addResourceSource(RESOURCE_PATH)
+            .addPropertySource(propertySource)
             .build()
             .loadConfigOrThrow()
-    }
-
-    private companion object {
-
-        private const val RESOURCE_PATH = "/config.example.json"
     }
 }

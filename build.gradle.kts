@@ -64,7 +64,6 @@ dependencies {
     implementation("dev.inmo:tgbotapi:$tgbotapiVersion")
 
     implementation("com.sksamuel.hoplite:hoplite-core:$hopliteVersion")
-    implementation("com.sksamuel.hoplite:hoplite-json:$hopliteVersion")
 
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")

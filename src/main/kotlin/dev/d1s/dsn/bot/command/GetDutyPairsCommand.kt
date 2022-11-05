@@ -37,7 +37,7 @@ class GetDutyPairsCommand : Command, KoinComponent {
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireInitializedGroupChat(groupChatService, message) {
-            val dutyPairs = config.dutyPairs
+            val dutyPairs = config.parsedDutyPairs
 
             val entities = withTitle(Emoji.SCROLL, "Полный список дежурных пар:") {
                 dutyPairs.forEach { pair ->

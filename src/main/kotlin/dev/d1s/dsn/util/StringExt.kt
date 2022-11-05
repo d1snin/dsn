@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package dev.d1s.dsn.config
+package dev.d1s.dsn.util
 
-import dev.d1s.dsn.util.parseDutyPairs
+import dev.d1s.dsn.entity.DutyPair
 
-data class ApplicationConfig(
-    val redis: RedisConfig,
-    val bot: TelegramBotConfig,
-    val announcing: AnnouncingConfig,
-    private val dutyPairs: String
-) {
-    val parsedDutyPairs get() = dutyPairs.parseDutyPairs()
+private const val PAIR_SEPARATOR = ";"
+private const val VALUE_SEPARATOR = ","
+
+fun String.parseDutyPairs() = this.split(PAIR_SEPARATOR).map { rawPair ->
+    val rawValues = rawPair.split(VALUE_SEPARATOR, limit = 2)
+
+    DutyPair(
+        firstStudent = rawValues[0],
+        secondStudent = rawValues[1]
+    )
 }
-
-data class RedisConfig(
-    val endpoint: String
-)
-
-data class TelegramBotConfig(
-    val token: String
-)
-
-data class AnnouncingConfig(
-    val cron: String? = null
-)

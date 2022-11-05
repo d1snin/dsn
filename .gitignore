@@ -37,3 +37,6 @@ out/
 
 ### Authentication ###
 token.txt
+
+### Configuration ###
+.env

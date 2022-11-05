@@ -55,7 +55,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     override suspend fun getCurrentDutyPair(): DutyPair {
         val dutyPairIndex = getCurrentDutyPairIndex()
 
-        val dutyPairs = config.dutyPairs
+        val dutyPairs = config.parsedDutyPairs
 
         return dutyPairs.getOrNull(dutyPairIndex.index)
             ?: error("Index is out of bounds ($dutyPairIndex, total elements: ${dutyPairs.size})")
@@ -85,7 +85,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
         val chatId = groupChat.orThrowOnGroupChatNotInitialized()
 
         val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
-            val dutyPair = config.dutyPairs[dutyPairIndex.index]
+            val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]
 
             formatDutyPair(dutyPair)
         }
@@ -120,7 +120,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     private fun getNextDutyPairIndex(current: DutyPairIndex): DutyPairIndex {
-        val dutyPairs = config.dutyPairs
+        val dutyPairs = config.parsedDutyPairs
 
         val incrementedCurrent = current.index + 1
 
