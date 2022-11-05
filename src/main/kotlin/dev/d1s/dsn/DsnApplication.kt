@@ -18,7 +18,6 @@ package dev.d1s.dsn
 
 import dev.d1s.dsn.bot.TelegramBot
 import dev.d1s.dsn.database.RedisClientFactory
-import dev.d1s.dsn.service.AuthenticationService
 import dev.d1s.dsn.service.SchedulingService
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -30,8 +29,6 @@ class DsnApplication : KoinComponent {
 
     private val redisClientFactory by inject<RedisClientFactory>()
 
-    private val authenticationService by inject<AuthenticationService>()
-
     private val telegramBot by inject<TelegramBot>()
 
     private val schedulingService by inject<SchedulingService>()
@@ -42,8 +39,6 @@ class DsnApplication : KoinComponent {
         }
 
         redisClientFactory.connect()
-
-        authenticationService.initTokenFile()
 
         val job = telegramBot.startTelegramBot()
 

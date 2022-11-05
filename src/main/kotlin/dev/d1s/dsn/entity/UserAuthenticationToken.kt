@@ -17,4 +17,4 @@
 package dev.d1s.dsn.entity
 
 @JvmInline
-value class Token(val token: String)
+value class UserAuthenticationToken(val token: String)

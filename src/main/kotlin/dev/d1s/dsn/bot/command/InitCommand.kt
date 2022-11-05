@@ -16,7 +16,7 @@
 
 package dev.d1s.dsn.bot.command
 
-import dev.d1s.dsn.entity.Token
+import dev.d1s.dsn.entity.UserAuthenticationToken
 import dev.d1s.dsn.service.*
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.makeTitle
@@ -92,7 +92,7 @@ class InitCommand : Command, KoinComponent {
     @OptIn(PreviewFeature::class)
     private suspend fun BehaviourContext.retrieveAuthToken(
         contextMessage: TextMessage, owner: FromUser
-    ): Pair<Token, TextMessage> {
+    ): Pair<UserAuthenticationToken, TextMessage> {
         val ownerId = owner.user.id
 
         val sendAuthKeyContent = makeTitle(Emoji.LOCKED_WITH_KEY, "Отправьте авторизационный ключ.")
@@ -105,7 +105,7 @@ class InitCommand : Command, KoinComponent {
 
         val authKey = authKeyMessage.content.text
 
-        return Token(authKey) to authKeyMessage
+        return UserAuthenticationToken(authKey) to authKeyMessage
     }
 
     private suspend fun BehaviourContext.replyInvalidToken(message: TextMessage) {

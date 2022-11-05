@@ -16,64 +16,31 @@
 
 package dev.d1s.dsn.service
 
+import dev.d1s.dsn.config.ApplicationConfig
 import dev.d1s.dsn.entity.AuthenticationResult
-import dev.d1s.dsn.entity.Token
-import dispatch.core.withIO
+import dev.d1s.dsn.entity.UserAuthenticationToken
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.lighthousegames.logging.logging
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.*
 
 interface AuthenticationService {
 
-    suspend fun initTokenFile()
-
-    suspend fun authenticate(authenticationToken: Token): AuthenticationResult
+    suspend fun authenticate(userAuthenticationToken: UserAuthenticationToken): AuthenticationResult
 }
 
 class AuthenticationServiceImpl : AuthenticationService, KoinComponent {
 
-    private val tokenFilePath = Paths.get(TOKEN_FILE)
+    private val config by inject<ApplicationConfig>()
 
     private val log = logging()
 
-    override suspend fun initTokenFile() {
-        log.i {
-            "Initializing token file..."
+    override suspend fun authenticate(userAuthenticationToken: UserAuthenticationToken): AuthenticationResult {
+        val realToken = config.bot.userAuthenticationToken
+
+        log.d {
+            "Trying to authenticate $userAuthenticationToken against $realToken"
         }
 
-        withIO {
-            if (!Files.exists(tokenFilePath)) {
-                writeToken()
-            }
-        }
-    }
-
-    override suspend fun authenticate(authenticationToken: Token): AuthenticationResult {
-        val realToken = getRawToken()
-
-        return AuthenticationResult(authenticationToken.token == realToken)
-    }
-
-    private suspend fun getRawToken() = withIO {
-        @Suppress("BlockingMethodInNonBlockingContext")
-        Files.readString(tokenFilePath)
-    }
-
-    private suspend fun writeToken() {
-        withIO {
-            val uuid = generateUuid()
-
-            @Suppress("BlockingMethodInNonBlockingContext")
-            Files.write(tokenFilePath, uuid)
-        }
-    }
-
-    private fun generateUuid() = UUID.randomUUID().toString().toByteArray()
-
-    private companion object {
-
-        private const val TOKEN_FILE = "token.txt"
+        return AuthenticationResult(userAuthenticationToken == realToken)
     }
 }
