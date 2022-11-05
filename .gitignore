@@ -35,8 +35,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### Authentication ###
-token.txt
-
 ### Configuration ###
 .env
