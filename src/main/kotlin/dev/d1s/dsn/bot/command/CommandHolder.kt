@@ -35,9 +35,10 @@ class CommandHolderImpl : CommandHolder, KoinComponent {
     private val initCommand by inject<Command>(Qualifier.InitCommand)
     private val postponeCommand by inject<Command>(Qualifier.PostponeCommand)
     private val switchCommand by inject<Command>(Qualifier.SwitchCommand)
+    private val toggleCommand by inject<Command>(Qualifier.ToggleCommand)
 
     override val commands by lazy {
-        listOf(getCurrentDutyPairCommand, getDutyPairsCommand, initCommand, postponeCommand, switchCommand)
+        listOf(getCurrentDutyPairCommand, getDutyPairsCommand, initCommand, postponeCommand, switchCommand, toggleCommand)
     }
 
     override val botCommands by lazy {

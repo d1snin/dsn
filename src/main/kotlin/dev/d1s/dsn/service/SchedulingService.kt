@@ -26,6 +26,10 @@ import org.quartz.Scheduler
 interface SchedulingService {
 
     fun scheduleJobs()
+
+    fun pauseAllJobs()
+
+    fun resumeAllJobs()
 }
 
 class SchedulingServiceImpl : SchedulingService, KoinComponent {
@@ -44,5 +48,13 @@ class SchedulingServiceImpl : SchedulingService, KoinComponent {
         announceDutyPairJob.schedule()
 
         scheduler.start()
+    }
+
+    override fun pauseAllJobs() {
+        scheduler.pauseAll()
+    }
+
+    override fun resumeAllJobs() {
+        scheduler.resumeAll()
     }
 }

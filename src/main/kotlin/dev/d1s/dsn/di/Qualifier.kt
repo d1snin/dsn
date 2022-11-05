@@ -27,4 +27,5 @@ object Qualifier {
     val InitCommand = named("init-command")
     val PostponeCommand = named("postpone-command")
     val SwitchCommand = named("switch-command")
+    val ToggleCommand = named("toggle-command")
 }

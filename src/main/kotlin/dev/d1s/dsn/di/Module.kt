@@ -91,6 +91,10 @@ fun Module.commands() {
     singleOf<Command>(::SwitchCommand) {
         qualifier = Qualifier.SwitchCommand
     }
+
+    singleOf<Command>(::ToggleCommand) {
+        qualifier = Qualifier.ToggleCommand
+    }
 }
 
 fun Module.applicationConfig() {
