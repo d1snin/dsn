@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  duty-students-notifier:
+    image: duty-students-notifier:latest
+    container_name: duty-students-notifier
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    restart: always
