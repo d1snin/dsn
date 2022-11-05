@@ -1,11 +1,26 @@
 version: '3'
 
+volumes:
+  redis-data:
+    driver: local
+
+  redis-conf:
+    driver: local
+
 services:
   duty-students-notifier:
     image: duty-students-notifier:latest
+    network_mode: host
     container_name: duty-students-notifier
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
     env_file: ../.env
     restart: always
+
+  dsn-redis:
+    image: redis:latest
+    network_mode: host
+    volumes:
+      - redis-data:/var/lib/redis
+      - redis-conf:/usr/local/etc/redis/redis.conf
