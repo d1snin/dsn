@@ -41,6 +41,6 @@ class AuthenticationServiceImpl : AuthenticationService, KoinComponent {
             "Trying to authenticate $userAuthenticationToken against $realToken"
         }
 
-        return AuthenticationResult(userAuthenticationToken == realToken)
+        return AuthenticationResult(userAuthenticationToken.token == realToken)
     }
 }
