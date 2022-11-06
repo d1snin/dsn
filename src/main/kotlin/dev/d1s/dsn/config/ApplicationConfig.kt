@@ -16,6 +16,7 @@
 
 package dev.d1s.dsn.config
 
+import dev.d1s.dsn.entity.UserAuthenticationToken
 import dev.d1s.dsn.util.parseDutyPairs
 
 data class ApplicationConfig(
@@ -33,7 +34,7 @@ data class RedisConfig(
 
 data class TelegramBotConfig(
     val token: String,
-    val userAuthenticationToken: String
+    val userAuthenticationToken: UserAuthenticationToken
 )
 
 data class AnnouncingConfig(
