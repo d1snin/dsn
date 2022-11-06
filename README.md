@@ -46,9 +46,9 @@
 |-----------------------------------|------------------------------------------------------------------------------|
 | `DSN.REDIS.ENDPOINT`              | Адрес Redis-сервера вида `<host>:<port>`.                                    |
 | `DSN.BOT.TOKEN`                   | Токен Telegram-бота.                                                         |
-| `DSN.BOT.USERAUTHENTICATIONTOKEN` | Токен авторизации пользователя.                                              |
+| `DSN.BOT.USER_AUTHENTICATION_TOKEN` | Токен авторизации пользователя.                                              |
 | `DSN.ANNOUNCING.CRON`             | Cron-выражение по которому срабатывает джоба объявления новых дежурных.      |
-| `DSN.DUTYPAIRS`                   | Дежурные пары. Формат следующий: `<student_1,student_2;student_3,student_4>` |
+| `DSN.DUTY_PAIRS`                   | Дежурные пары. Формат следующий: `<student_1,student_2;student_3,student_4>` |
 
 Сохраните файл как `.env`, отбросив окончание `.tmp`.
 
