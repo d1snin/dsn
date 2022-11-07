@@ -18,19 +18,20 @@ package dev.d1s.dsn.job
 
 import dev.d1s.dsn.config.ApplicationConfig
 import dev.d1s.dsn.service.DutyPairService
+import dev.d1s.dsn.service.GroupChatService
 import dispatch.core.IOCoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.lighthousegames.logging.logging
-import org.quartz.CronScheduleBuilder
-import org.quartz.JobBuilder
-import org.quartz.JobExecutionContext
-import org.quartz.TriggerBuilder
+import org.quartz.*
+import java.util.*
 
 class AnnounceDutyPairJob : ScheduledJob(), KoinComponent {
 
     private val dutyPairService by inject<DutyPairService>()
+
+    private val groupChatService by inject<GroupChatService>()
 
     private val config by inject<ApplicationConfig>()
 
@@ -40,7 +41,9 @@ class AnnounceDutyPairJob : ScheduledJob(), KoinComponent {
 
     override fun execute(context: JobExecutionContext?) {
         announceDutyPairJobScope.launch {
-            dutyPairService.switchDutyPair()
+            if (groupChatService.isGroupChatInitialized()) {
+                dutyPairService.switchDutyPair()
+            }
         }
     }
 
@@ -53,7 +56,7 @@ class AnnounceDutyPairJob : ScheduledJob(), KoinComponent {
             .withIdentity(IDENTITY)
             .build()
 
-        val cron = CronScheduleBuilder.cronSchedule(config.announcing.cron ?: DEFAULT_CRON)
+        val cron = CronScheduleBuilder.cronSchedule(config.announcing.cron).inTimeZone(TimeZone.getDefault())
 
         val trigger = TriggerBuilder.newTrigger()
             .withIdentity(CRON_TRIGGER_IDENTITY)
@@ -67,8 +70,8 @@ class AnnounceDutyPairJob : ScheduledJob(), KoinComponent {
 
         const val IDENTITY = "announce-duty-pair"
 
-        private const val DEFAULT_CRON = "0 7 * * * 1,2,3,4,5,6"
-
         private const val CRON_TRIGGER_IDENTITY = "announce-duty-pair-cron-trigger"
+
+        val key = JobKey(IDENTITY)
     }
 }
