@@ -21,15 +21,16 @@ import dev.d1s.dsn.job.ScheduledJob
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.lighthousegames.logging.logging
+import org.quartz.JobKey
 import org.quartz.Scheduler
 
 interface SchedulingService {
 
     fun scheduleJobs()
 
-    fun pauseAllJobs()
+    fun pauseJob(key: JobKey)
 
-    fun resumeAllJobs()
+    fun resumeJob(key: JobKey)
 }
 
 class SchedulingServiceImpl : SchedulingService, KoinComponent {
@@ -50,11 +51,11 @@ class SchedulingServiceImpl : SchedulingService, KoinComponent {
         scheduler.start()
     }
 
-    override fun pauseAllJobs() {
-        scheduler.pauseAll()
+    override fun pauseJob(key: JobKey) {
+        scheduler.pauseJob(key)
     }
 
-    override fun resumeAllJobs() {
-        scheduler.resumeAll()
+    override fun resumeJob(key: JobKey) {
+        scheduler.resumeJob(key)
     }
 }
