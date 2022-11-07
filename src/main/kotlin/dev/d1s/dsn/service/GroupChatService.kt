@@ -18,6 +18,7 @@ package dev.d1s.dsn.service
 
 import dev.d1s.dsn.database.Key
 import dev.d1s.dsn.database.RedisClientFactory
+import dev.d1s.dsn.util.setAndPersist
 import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import org.koin.core.component.KoinComponent
@@ -77,12 +78,12 @@ class GroupChatServiceImpl : GroupChatService, KoinComponent {
     private suspend fun getGroupChatId() = redis.get(Key.GROUP_CHAT_ID)?.toLong()
 
     private suspend fun setGroupChatId(chatId: Long) {
-        redis.set(Key.GROUP_CHAT_ID, chatId.toString())
+        redis.setAndPersist(Key.GROUP_CHAT_ID, chatId.toString())
     }
 
     private suspend fun getOwnerId() = redis.get(Key.OWNER_ID)?.toLong()
 
     private suspend fun setOwnerId(ownerId: Long) {
-        redis.set(Key.OWNER_ID, ownerId.toString())
+        redis.setAndPersist(Key.OWNER_ID, ownerId.toString())
     }
 }

@@ -104,7 +104,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     private suspend fun setCurrentDutyPairIndex(index: DutyPairIndex) {
-        redis.set(Key.CURRENT_DUTY_PAIR_INDEX, index.toString())
+        redis.setAndPersist(Key.CURRENT_DUTY_PAIR_INDEX, index.toString())
     }
 
     private suspend fun getPostponedDutyPairIndex(): DutyPairIndex? {
@@ -116,7 +116,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     private suspend fun setPostponedDutyPairIndex(dutyPairIndex: DutyPairIndex) {
-        redis.set(Key.POSTPONED_DUTY_PAIR_INDEX, dutyPairIndex.toString())
+        redis.setAndPersist(Key.POSTPONED_DUTY_PAIR_INDEX, dutyPairIndex.toString())
     }
 
     private fun getNextDutyPairIndex(current: DutyPairIndex): DutyPairIndex {
