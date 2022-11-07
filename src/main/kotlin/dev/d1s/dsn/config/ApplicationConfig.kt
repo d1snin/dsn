@@ -38,5 +38,5 @@ data class TelegramBotConfig(
 )
 
 data class AnnouncingConfig(
-    val cron: String? = null
+    val cron: String
 )
