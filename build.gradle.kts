@@ -55,7 +55,7 @@ dependencies {
 
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))
-    
+
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("org.lighthousegames:logging:$kmLogVersion")
 
@@ -75,6 +75,6 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
     }
 }
