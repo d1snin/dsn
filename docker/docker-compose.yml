@@ -16,6 +16,9 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     env_file: ../.env
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     restart: always
 
   dsn-redis:
@@ -24,3 +27,4 @@ services:
     volumes:
       - redis-data:/var/lib/redis
       - redis-conf:/usr/local/etc/redis/redis.conf
+    restart: always
