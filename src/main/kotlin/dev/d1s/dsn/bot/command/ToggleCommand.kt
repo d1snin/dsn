@@ -16,9 +16,13 @@
 
 package dev.d1s.dsn.bot.command
 
+import dev.d1s.dsn.job.AnnounceDutyPairJob
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.service.SchedulingService
+import dev.d1s.dsn.util.Emoji
+import dev.d1s.dsn.util.makeTitle
 import dev.d1s.dsn.util.requireOwner
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
@@ -40,11 +44,19 @@ class ToggleCommand : Command, KoinComponent {
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireOwner(groupChatService, message) {
             if (paused.get()) {
-                schedulingService.resumeAllJobs()
+                schedulingService.resumeJob(AnnounceDutyPairJob.key)
                 paused.set(false)
+
+                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение деужрных включено.")
+
+                reply(message, content)
             } else {
-                schedulingService.pauseAllJobs()
+                schedulingService.pauseJob(AnnounceDutyPairJob.key)
                 paused.set(true)
+
+                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение деужрных выключено.")
+
+                reply(message, content)
             }
         }
     }
