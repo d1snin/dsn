@@ -102,21 +102,19 @@ class TelegramBotImpl : TelegramBot, KoinComponent {
                 log.d {
                     "Request timed out."
                 }
-
-                return
             }
 
             is CommonBotException -> {
                 log.d {
                     "Something went wrong: ${throwable.cause?.message ?: "no message"}"
                 }
-
-                return
             }
-        }
 
-        log.e(throwable) {
-            "An error occurred."
+            else -> {
+                log.e(throwable) {
+                    "An error occurred."
+                }
+            }
         }
     }
 }
