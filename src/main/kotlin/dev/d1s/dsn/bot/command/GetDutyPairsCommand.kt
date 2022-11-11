@@ -29,7 +29,7 @@ class GetDutyPairsCommand : Command, KoinComponent {
 
     override val name = "pairs"
 
-    override val description = "Показать всех дежурных пар."
+    override val description = "Показать все дежурные пары."
 
     private val config by inject<ApplicationConfig>()
 
