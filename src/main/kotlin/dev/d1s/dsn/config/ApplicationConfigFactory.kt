@@ -20,7 +20,7 @@ import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.sources.EnvironmentVariablesPropertySource
 import org.lighthousegames.logging.logging
 
-private const val ENV_VAR_PREFIX = "DSN."
+private const val ENV_VAR_PREFIX = "DSN__"
 
 interface ApplicationConfigFactory {
 
