@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  dns-redis-data:
+  dsn-redis-data:
     driver: local
 
   dsn-redis-conf:
