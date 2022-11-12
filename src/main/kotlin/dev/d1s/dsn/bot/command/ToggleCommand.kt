@@ -47,14 +47,14 @@ class ToggleCommand : Command, KoinComponent {
                 schedulingService.resumeJob(AnnounceDutyPairJob.key)
                 paused.set(false)
 
-                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение деужрных включено.")
+                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение дежурных включено.")
 
                 reply(message, content)
             } else {
                 schedulingService.pauseJob(AnnounceDutyPairJob.key)
                 paused.set(true)
 
-                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение деужрных выключено.")
+                val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение дежурных выключено.")
 
                 reply(message, content)
             }
