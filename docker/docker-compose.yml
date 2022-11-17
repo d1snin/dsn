@@ -7,10 +7,13 @@ volumes:
   dsn-redis-conf:
     driver: local
 
+networks:
+  dsn-net:
+    driver: bridge
+
 services:
   duty-students-notifier:
     image: duty-students-notifier:latest
-    network_mode: host
     container_name: duty-students-notifier
     build:
       context: ../
@@ -19,12 +22,17 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    networks:
+      - dsn-net
     restart: always
 
   dsn-redis:
     image: redis:latest
-    network_mode: host
+    expose:
+      - 6379
     volumes:
       - dsn-redis-data:/var/lib/redis
       - dsn-redis-conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - dsn-net
     restart: always
