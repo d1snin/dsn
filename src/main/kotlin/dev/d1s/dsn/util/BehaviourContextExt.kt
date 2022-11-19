@@ -87,6 +87,18 @@ suspend fun <BC : BehaviourContext> BC.requireOwner(
     }
 }
 
+suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfoAndOwner(
+    groupChatService: GroupChatService,
+    message: TextMessage,
+    block: suspend BC.(GroupChatInfo, UserId) -> Unit
+) {
+    requireInitializedGroupChatInfo(groupChatService, message) { groupChatInfo ->
+        requireOwner(groupChatService, message) { ownerId ->
+            block(groupChatInfo, ownerId)
+        }
+    }
+}
+
 private suspend fun <BC : BehaviourContext> BC.commandNotAvailable(message: TextMessage) {
     val commandNotAvailableContent = makeTitle(Emoji.CROSS_MARK, "Команда еще не доступа.")
 
