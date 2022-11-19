@@ -4,9 +4,6 @@ volumes:
   dsn-redis-data:
     driver: local
 
-  dsn-redis-conf:
-    driver: local
-
 networks:
   dsn-net:
     driver: bridge
@@ -32,7 +29,6 @@ services:
       - 6379
     volumes:
       - dsn-redis-data:/data
-      - dsn-redis-conf:/data
     networks:
       - dsn-net
     restart: always
