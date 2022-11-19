@@ -18,10 +18,7 @@ package dev.d1s.dsn.util
 
 import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.service.DutyPairService
-import dev.inmo.tgbotapi.extensions.utils.formatting.EntitiesBuilder
-import dev.inmo.tgbotapi.extensions.utils.formatting.bold
-import dev.inmo.tgbotapi.extensions.utils.formatting.regular
-import dev.inmo.tgbotapi.extensions.utils.formatting.regularln
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
 
 fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
     bold("1.")
@@ -34,7 +31,7 @@ fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
 fun EntitiesBuilder.formatDutyPairs(dutyPairs: List<DutyPair>, indexed: Boolean = false) {
     dutyPairs.forEachIndexed { index, dutyPair ->
         if (indexed) {
-            bold("${index + 1})")
+            boldln("${index + 1})")
         }
         formatDutyPair(dutyPair)
         doubleNewLine()
