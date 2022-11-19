@@ -22,7 +22,5 @@ object Key {
 
     const val POSTPONED_DUTY_PAIR_INDEX = "postponed_duty_pair_index"
 
-    const val GROUP_CHAT_ID = "group_chat_id"
-
-    const val OWNER_ID = "owner_id"
+    const val GROUP_CHAT_INFO = "group_chat_info"
 }

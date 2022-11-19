@@ -22,6 +22,8 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
 import dev.inmo.tgbotapi.extensions.utils.fromUserOrNull
 import dev.inmo.tgbotapi.types.BotCommand
+import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.chat.GroupChat
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.utils.PreviewFeature
@@ -40,21 +42,23 @@ suspend inline fun <BC : BehaviourContext> BC.requireGroupChat(message: TextMess
     }
 }
 
-suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChat(
+suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfo(
     groupChatService: GroupChatService,
     message: TextMessage,
-    block: suspend BC.() -> Unit
+    block: suspend BC.(ChatId) -> Unit
 ) {
     val thisChatId = message.chat.id.chatId
 
-    val initializedGroupChat = groupChatService.getGroupChat() ?: run {
+    val initializedGroupChat = groupChatService.getGroupChatInfo() ?: run {
         commandNotAvailable(message)
 
         return
     }
 
-    if (initializedGroupChat.chatId == thisChatId) {
-        block()
+    val groupChatId = initializedGroupChat.groupChatId
+
+    if (groupChatId.chatId == thisChatId) {
+        block(groupChatId)
     } else {
         val wrongChatContent = makeTitle(Emoji.CROSS_MARK, "Этот чат не подходит для исполнения запрашиваемой команды.")
 
@@ -66,18 +70,18 @@ suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChat(
 suspend fun <BC : BehaviourContext> BC.requireOwner(
     groupChatService: GroupChatService,
     message: TextMessage,
-    block: suspend BC.() -> Unit
+    block: suspend BC.(UserId) -> Unit
 ) {
     val thisUser = message.fromUserOrNull()?.user?.id?.chatId
 
-    val ownerId = groupChatService.getOwner() ?: run {
+    val ownerId = groupChatService.getGroupChatInfo()?.ownerId ?: run {
         commandNotAvailable(message)
 
         return
     }
 
     if (ownerId.chatId == thisUser) {
-        block()
+        block(ownerId)
     } else {
         val noPermissionContent = makeTitle(Emoji.CROSS_MARK, "Нет прав.")
 

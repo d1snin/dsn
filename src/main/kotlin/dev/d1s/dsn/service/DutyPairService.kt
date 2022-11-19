@@ -22,6 +22,7 @@ import dev.d1s.dsn.database.Key
 import dev.d1s.dsn.database.RedisClientFactory
 import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.entity.DutyPairIndex
+import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import org.koin.core.component.KoinComponent
@@ -80,9 +81,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     private suspend fun announceDutyPair(dutyPairIndex: DutyPairIndex) {
-        val groupChat = groupChatService.getGroupChat()
-
-        val chatId = groupChat.orThrowOnGroupChatNotInitialized()
+        val chatId = groupChatService.getGroupChatInfo().orThrow().groupChatId
 
         val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
             val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]

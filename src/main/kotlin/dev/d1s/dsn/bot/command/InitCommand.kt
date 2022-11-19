@@ -16,6 +16,7 @@
 
 package dev.d1s.dsn.bot.command
 
+import dev.d1s.dsn.entity.GroupChatInfo
 import dev.d1s.dsn.entity.UserAuthenticationToken
 import dev.d1s.dsn.service.*
 import dev.d1s.dsn.util.Emoji
@@ -46,7 +47,7 @@ class InitCommand : Command, KoinComponent {
     @OptIn(PreviewFeature::class)
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireGroupChat(message) {
-            if (groupChatService.isGroupChatInitialized()) {
+            if (groupChatService.isGroupChatInfoInitialized()) {
                 replyChatAlreadyInitialized(message)
 
                 return@onCommand
@@ -68,8 +69,9 @@ class InitCommand : Command, KoinComponent {
                 return@onCommand
             }
 
-            groupChatService.setGroupChat(message.chat.id)
-            groupChatService.setOwner(owner.user.id)
+            val groupChatInfo = GroupChatInfo(message.chat.id, owner.user.id)
+
+            groupChatService.setGroupChatInfo(groupChatInfo)
 
             val chatInitializedContent = makeTitle(Emoji.CHECK_MARK, "Чат инициализирован.")
 

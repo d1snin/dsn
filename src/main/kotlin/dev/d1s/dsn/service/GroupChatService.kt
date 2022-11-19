@@ -18,72 +18,48 @@ package dev.d1s.dsn.service
 
 import dev.d1s.dsn.database.Key
 import dev.d1s.dsn.database.RedisClientFactory
+import dev.d1s.dsn.entity.GroupChatInfo
 import dev.d1s.dsn.util.setAndPersist
-import dev.inmo.tgbotapi.types.ChatId
-import dev.inmo.tgbotapi.types.UserId
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 interface GroupChatService {
 
-    suspend fun getGroupChat(): ChatId?
+    suspend fun getGroupChatInfo(): GroupChatInfo?
 
-    suspend fun isGroupChatInitialized(): Boolean
+    suspend fun isGroupChatInfoInitialized(): Boolean
 
-    suspend fun setGroupChat(chat: ChatId)
-
-    suspend fun getOwner(): UserId?
-
-    suspend fun isOwnerInitialized(): Boolean
-
-    suspend fun setOwner(owner: UserId)
+    suspend fun setGroupChatInfo(groupChatInfo: GroupChatInfo)
 }
 
 class GroupChatServiceImpl : GroupChatService, KoinComponent {
 
     private val redisFactory by inject<RedisClientFactory>()
 
-    private val redis by lazy  {
+    private val redis by lazy {
         redisFactory.redis
     }
 
-    override suspend fun getGroupChat(): ChatId? {
-        val chatId = getGroupChatId()
+    override suspend fun getGroupChatInfo(): GroupChatInfo? {
+        val rawGroupChatInfo = this.getRawGroupChatInfo()
 
-        return chatId?.let {
-            ChatId(it)
+        return rawGroupChatInfo?.let {
+            GroupChatInfo.deserialize(it)
         }
     }
 
-    override suspend fun isGroupChatInitialized() = getGroupChatId() != null
+    override suspend fun isGroupChatInfoInitialized(): Boolean =
+        this.getGroupChatInfo() != null
 
-    override suspend fun setGroupChat(chat: ChatId) {
-        setGroupChatId(chat.chatId)
+    override suspend fun setGroupChatInfo(groupChatInfo: GroupChatInfo) {
+        val serializedGroupChatInfo = groupChatInfo.serialize()
+
+        setRawGroupChatInfo(serializedGroupChatInfo)
     }
 
-    override suspend fun getOwner(): UserId? {
-        val ownerId = getOwnerId()
+    private suspend fun getRawGroupChatInfo() =
+        redis.get(Key.GROUP_CHAT_INFO)
 
-        return ownerId?.let {
-            UserId(it)
-        }
-    }
-
-    override suspend fun isOwnerInitialized() = getOwnerId() != null
-
-    override suspend fun setOwner(owner: UserId) {
-        setOwnerId(owner.chatId)
-    }
-
-    private suspend fun getGroupChatId() = redis.get(Key.GROUP_CHAT_ID)?.toLong()
-
-    private suspend fun setGroupChatId(chatId: Long) {
-        redis.setAndPersist(Key.GROUP_CHAT_ID, chatId.toString())
-    }
-
-    private suspend fun getOwnerId() = redis.get(Key.OWNER_ID)?.toLong()
-
-    private suspend fun setOwnerId(ownerId: Long) {
-        redis.setAndPersist(Key.OWNER_ID, ownerId.toString())
-    }
+    private suspend fun setRawGroupChatInfo(rawGroupChatInfo: String) =
+        redis.setAndPersist(Key.GROUP_CHAT_INFO, rawGroupChatInfo)
 }

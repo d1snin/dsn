@@ -41,7 +41,7 @@ class AnnounceDutyPairJob : ScheduledJob(), KoinComponent {
 
     override fun execute(context: JobExecutionContext?) {
         announceDutyPairJobScope.launch {
-            if (groupChatService.isGroupChatInitialized()) {
+            if (groupChatService.isGroupChatInfoInitialized()) {
                 dutyPairService.switchDutyPair()
             }
         }
