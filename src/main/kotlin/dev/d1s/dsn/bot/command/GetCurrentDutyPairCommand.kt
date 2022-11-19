@@ -16,31 +16,35 @@
 
 package dev.d1s.dsn.bot.command
 
+import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
-import dev.d1s.dsn.util.makeTitle
-import dev.d1s.dsn.util.requireOwner
+import dev.d1s.dsn.util.formatCurrentDutyPair
+import dev.d1s.dsn.util.requireInitializedGroupChat
+import dev.d1s.dsn.util.withTitle
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ResetCommand : Command, KoinComponent {
+class GetCurrentDutyPairCommand : Command, KoinComponent {
 
-    override val name = "reset"
+    override val name = "current"
 
-    override val description = "Сбросить раннее инициализированный чат."
+    override val description = "Показать текущих дежурных."
 
     private val groupChatService by inject<GroupChatService>()
 
+    private val dutyPairService by inject<DutyPairService>()
+
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireOwner(groupChatService, message) {
-            groupChatService.clearGroupChatInfo()
+        requireInitializedGroupChat(groupChatService, message) {
+            val currentDutyPair = withTitle(Emoji.BUSTS_IN_SILHOUETTE, "Текущая дежурная пара:") {
+                formatCurrentDutyPair(dutyPairService)
+            }
 
-            val successfullyReset = makeTitle(Emoji.CHECK_MARK, "Чат сброшен.")
-
-            reply(message, successfullyReset)
+            reply(message, currentDutyPair)
         }
     }
 }

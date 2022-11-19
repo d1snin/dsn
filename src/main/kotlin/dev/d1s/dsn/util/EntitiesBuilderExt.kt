@@ -31,6 +31,16 @@ fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
     regular(" ${dutyPair.secondStudent}")
 }
 
+fun EntitiesBuilder.formatDutyPairs(dutyPairs: List<DutyPair>, indexed: Boolean = false) {
+    dutyPairs.forEachIndexed { index, dutyPair ->
+        if (indexed) {
+            bold("${index + 1})")
+        }
+        formatDutyPair(dutyPair)
+        doubleNewLine()
+    }
+}
+
 suspend fun EntitiesBuilder.formatCurrentDutyPair(dutyPairService: DutyPairService) {
     val currentDutyPair = dutyPairService.getCurrentDutyPair()
 

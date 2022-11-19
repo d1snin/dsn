@@ -29,7 +29,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.atomic.AtomicBoolean
 
-class ToggleCommand : Command, KoinComponent {
+class ToggleSchedulingCommand : Command, KoinComponent {
 
     override val name = "toggle"
 

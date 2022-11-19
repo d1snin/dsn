@@ -72,31 +72,35 @@ fun Module.commandHolder() {
 }
 
 fun Module.commands() {
-    singleOf<Command>(::GeCurrentCommand) {
+    singleOf<Command>(::GetCurrentDutyPairCommand) {
         qualifier = Qualifier.GetCurrentDutyPairCommand
     }
 
-    singleOf<Command>(::GetCommand) {
+    singleOf<Command>(::GetDutyPairsCommand) {
         qualifier = Qualifier.GetDutyPairsCommand
     }
 
-    singleOf<Command>(::InitCommand) {
+    singleOf<Command>(::InitGroupChatCommand) {
         qualifier = Qualifier.InitCommand
     }
 
-    singleOf<Command>(::PostponeCommand) {
+    singleOf<Command>(::PostponeDutyPairCommand) {
         qualifier = Qualifier.PostponeCommand
     }
 
-    singleOf<Command>(::ResetCommand) {
+    singleOf<Command>(::ResetGroupChatCommand) {
         qualifier = Qualifier.ResetCommand
     }
 
-    singleOf<Command>(::SwitchCommand) {
+    singleOf<Command>(::SetDutyPairCommand) {
+        qualifier = Qualifier.SetDutyPairCommand
+    }
+
+    singleOf<Command>(::SwitchDutyPairCommand) {
         qualifier = Qualifier.SwitchCommand
     }
 
-    singleOf<Command>(::ToggleCommand) {
+    singleOf<Command>(::ToggleSchedulingCommand) {
         qualifier = Qualifier.ToggleCommand
     }
 }

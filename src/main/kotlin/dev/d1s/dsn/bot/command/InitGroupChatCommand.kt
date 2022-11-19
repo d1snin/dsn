@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class InitCommand : Command, KoinComponent {
+class InitGroupChatCommand : Command, KoinComponent {
 
     override val name = "init"
 

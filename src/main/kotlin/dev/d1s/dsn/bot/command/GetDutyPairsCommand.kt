@@ -18,26 +18,35 @@ package dev.d1s.dsn.bot.command
 
 import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
-import dev.d1s.dsn.util.requireOwner
+import dev.d1s.dsn.util.Emoji
+import dev.d1s.dsn.util.formatDutyPairs
+import dev.d1s.dsn.util.requireInitializedGroupChat
+import dev.d1s.dsn.util.withTitle
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+class GetDutyPairsCommand : Command, KoinComponent {
 
-class SwitchCommand : Command, KoinComponent {
+    override val name = "pairs"
 
-    override val name = "switch"
-
-    override val description = "Переключиться на следующую дежурную пару."
+    override val description = "Показать все дежурные пары."
 
     private val groupChatService by inject<GroupChatService>()
 
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireOwner(groupChatService, message) {
-            dutyPairService.switchDutyPair()
+        requireInitializedGroupChat(groupChatService, message) {
+            val dutyPairs = dutyPairService.getDutyPairs()
+
+            val dutyPairList = withTitle(Emoji.SCROLL, "Полный список дежурных пар:") {
+                formatDutyPairs(dutyPairs)
+            }
+
+            reply(message, dutyPairList)
         }
     }
 }

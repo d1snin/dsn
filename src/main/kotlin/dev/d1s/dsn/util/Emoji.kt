@@ -31,4 +31,6 @@ object Emoji {
     const val CHECK_MARK = "\u2705"
 
     const val LOCKED_WITH_KEY = "\uD83D\uDD10"
+
+    const val ARROW_DOWN = "\u2935"
 }

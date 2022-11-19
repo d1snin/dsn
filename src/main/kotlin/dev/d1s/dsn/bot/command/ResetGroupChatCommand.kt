@@ -16,7 +16,6 @@
 
 package dev.d1s.dsn.bot.command
 
-import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.makeTitle
@@ -27,26 +26,21 @@ import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PostponeCommand : Command, KoinComponent {
+class ResetGroupChatCommand : Command, KoinComponent {
 
-    override val name = "postpone"
+    override val name = "reset"
 
-    override val description = "Запланировать дежурство текущей пары на следующую итерацию."
+    override val description = "Сбросить раннее инициализированный чат."
 
     private val groupChatService by inject<GroupChatService>()
 
-    private val dutyPairService by inject<DutyPairService>()
-
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireOwner(groupChatService, message) {
-            dutyPairService.postponeCurrentDutyPair()
+            groupChatService.clearGroupChatInfo()
 
-            val dutyPairPostponedContent = makeTitle(
-                Emoji.FAST_FORWARD,
-                "Дежурство пары запланировано на следующую итерацию."
-            )
+            val successfullyReset = makeTitle(Emoji.CHECK_MARK, "Чат сброшен.")
 
-            reply(message, dutyPairPostponedContent)
+            reply(message, successfullyReset)
         }
     }
 }

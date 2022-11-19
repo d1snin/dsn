@@ -30,7 +30,11 @@ import org.koin.core.component.inject
 
 interface DutyPairService {
 
+    suspend fun getDutyPairs(): List<DutyPair>
+
     suspend fun getCurrentDutyPair(): DutyPair
+
+    suspend fun setCurrentDutyPair(index: DutyPairIndex)
 
     suspend fun postponeCurrentDutyPair()
 
@@ -53,6 +57,8 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
     private val bot by inject<TelegramBot>()
 
+    override suspend fun getDutyPairs() = config.parsedDutyPairs
+
     override suspend fun getCurrentDutyPair(): DutyPair {
         val dutyPairIndex = getCurrentDutyPairIndex()
 
@@ -60,6 +66,10 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
         return dutyPairs.getOrNull(dutyPairIndex.index)
             ?: error("Index is out of bounds ($dutyPairIndex, total elements: ${dutyPairs.size})")
+    }
+
+    override suspend fun setCurrentDutyPair(index: DutyPairIndex) {
+        setCurrentDutyPairIndex(index)
     }
 
     override suspend fun postponeCurrentDutyPair() {

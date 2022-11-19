@@ -19,32 +19,34 @@ package dev.d1s.dsn.bot.command
 import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
-import dev.d1s.dsn.util.formatCurrentDutyPair
-import dev.d1s.dsn.util.requireInitializedGroupChat
-import dev.d1s.dsn.util.withTitle
+import dev.d1s.dsn.util.makeTitle
+import dev.d1s.dsn.util.requireOwner
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class GeCurrentCommand : Command, KoinComponent {
+class PostponeDutyPairCommand : Command, KoinComponent {
 
-    override val name = "current"
+    override val name = "postpone"
 
-    override val description = "Показать текущих дежурных."
+    override val description = "Запланировать дежурство текущей пары на следующую итерацию."
 
     private val groupChatService by inject<GroupChatService>()
 
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireInitializedGroupChat(groupChatService, message) {
-            val entities = withTitle(Emoji.BUSTS_IN_SILHOUETTE, "Текущая дежурная пара:") {
-                formatCurrentDutyPair(dutyPairService)
-            }
+        requireOwner(groupChatService, message) {
+            dutyPairService.postponeCurrentDutyPair()
 
-            reply(message, entities)
+            val dutyPairPostponedContent = makeTitle(
+                Emoji.FAST_FORWARD,
+                "Дежурство пары запланировано на следующую итерацию."
+            )
+
+            reply(message, dutyPairPostponedContent)
         }
     }
 }
