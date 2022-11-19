@@ -28,7 +28,7 @@ import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class GetCurrentDutyPairCommand : Command, KoinComponent {
+class GeCurrentCommand : Command, KoinComponent {
 
     override val name = "current"
 

@@ -72,11 +72,11 @@ fun Module.commandHolder() {
 }
 
 fun Module.commands() {
-    singleOf<Command>(::GetCurrentDutyPairCommand) {
+    singleOf<Command>(::GeCurrentCommand) {
         qualifier = Qualifier.GetCurrentDutyPairCommand
     }
 
-    singleOf<Command>(::GetDutyPairsCommand) {
+    singleOf<Command>(::GetCommand) {
         qualifier = Qualifier.GetDutyPairsCommand
     }
 

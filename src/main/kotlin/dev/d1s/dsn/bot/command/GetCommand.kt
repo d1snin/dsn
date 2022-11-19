@@ -25,7 +25,7 @@ import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class GetDutyPairsCommand : Command, KoinComponent {
+class GetCommand : Command, KoinComponent {
 
     override val name = "pairs"
 
