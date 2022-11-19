@@ -26,6 +26,7 @@ object Qualifier {
     val GetDutyPairsCommand = named("get-duty-pairs-command")
     val InitCommand = named("init-command")
     val PostponeCommand = named("postpone-command")
+    val ResetCommand = named("reset-command")
     val SwitchCommand = named("switch-command")
     val ToggleCommand = named("toggle-command")
 }

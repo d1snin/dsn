@@ -30,6 +30,8 @@ interface GroupChatService {
     suspend fun isGroupChatInfoInitialized(): Boolean
 
     suspend fun setGroupChatInfo(groupChatInfo: GroupChatInfo)
+
+    suspend fun clearGroupChatInfo()
 }
 
 class GroupChatServiceImpl : GroupChatService, KoinComponent {
@@ -55,6 +57,10 @@ class GroupChatServiceImpl : GroupChatService, KoinComponent {
         val serializedGroupChatInfo = groupChatInfo.serialize()
 
         setRawGroupChatInfo(serializedGroupChatInfo)
+    }
+
+    override suspend fun clearGroupChatInfo() {
+        redis.del(Key.GROUP_CHAT_INFO)
     }
 
     private suspend fun getRawGroupChatInfo() =

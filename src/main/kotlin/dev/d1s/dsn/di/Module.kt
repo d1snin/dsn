@@ -88,6 +88,10 @@ fun Module.commands() {
         qualifier = Qualifier.PostponeCommand
     }
 
+    singleOf<Command>(::ResetCommand) {
+        qualifier = Qualifier.ResetCommand
+    }
+
     singleOf<Command>(::SwitchCommand) {
         qualifier = Qualifier.SwitchCommand
     }
