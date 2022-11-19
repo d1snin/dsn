@@ -24,10 +24,10 @@ object Qualifier {
 
     val GetCurrentDutyPairCommand = named("get-current-duty-pair-command")
     val GetDutyPairsCommand = named("get-duty-pairs-command")
-    val InitCommand = named("init-group-chat-command")
-    val PostponeCommand = named("postpone-duty-pair-command")
-    val ResetCommand = named("reset-group-chat-command")
+    val InitGroupChatCommand = named("init-group-chat-command")
+    val PostponeDutyPairCommand = named("postpone-duty-pair-command")
+    val ResetGroupChatCommand = named("reset-group-chat-command")
     val SetDutyPairCommand = named("set-duty-pair-command")
-    val SwitchCommand = named("switch-duty-pair-command")
-    val ToggleCommand = named("toggle-scheduling-command")
+    val SwitchDutyPairCommand = named("switch-duty-pair-command")
+    val ToggleSchedulingCommand = named("toggle-scheduling-command")
 }

@@ -81,15 +81,15 @@ fun Module.commands() {
     }
 
     singleOf<Command>(::InitGroupChatCommand) {
-        qualifier = Qualifier.InitCommand
+        qualifier = Qualifier.InitGroupChatCommand
     }
 
     singleOf<Command>(::PostponeDutyPairCommand) {
-        qualifier = Qualifier.PostponeCommand
+        qualifier = Qualifier.PostponeDutyPairCommand
     }
 
     singleOf<Command>(::ResetGroupChatCommand) {
-        qualifier = Qualifier.ResetCommand
+        qualifier = Qualifier.ResetGroupChatCommand
     }
 
     singleOf<Command>(::SetDutyPairCommand) {
@@ -97,11 +97,11 @@ fun Module.commands() {
     }
 
     singleOf<Command>(::SwitchDutyPairCommand) {
-        qualifier = Qualifier.SwitchCommand
+        qualifier = Qualifier.SwitchDutyPairCommand
     }
 
     singleOf<Command>(::ToggleSchedulingCommand) {
-        qualifier = Qualifier.ToggleCommand
+        qualifier = Qualifier.ToggleSchedulingCommand
     }
 }
 
