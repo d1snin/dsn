@@ -16,10 +16,8 @@
 
 package dev.d1s.dsn.bot.command
 
-import dev.d1s.dsn.di.Qualifier
 import dev.inmo.tgbotapi.types.BotCommand
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 interface CommandHolder {
 
@@ -30,15 +28,8 @@ interface CommandHolder {
 
 class CommandHolderImpl : CommandHolder, KoinComponent {
 
-    private val getCurrentDutyPairCommand by inject<Command>(Qualifier.GetCurrentDutyPairCommand)
-    private val getDutyPairsCommand by inject<Command>(Qualifier.GetDutyPairsCommand)
-    private val initCommand by inject<Command>(Qualifier.InitCommand)
-    private val postponeCommand by inject<Command>(Qualifier.PostponeCommand)
-    private val switchCommand by inject<Command>(Qualifier.SwitchCommand)
-    private val toggleCommand by inject<Command>(Qualifier.ToggleCommand)
-
     override val commands by lazy {
-        listOf(getCurrentDutyPairCommand, getDutyPairsCommand, initCommand, postponeCommand, switchCommand, toggleCommand)
+        getKoin().getAll<Command>()
     }
 
     override val botCommands by lazy {
