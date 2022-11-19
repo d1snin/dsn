@@ -31,8 +31,8 @@ services:
     expose:
       - 6379
     volumes:
-      - dsn-redis-data:/var/lib/redis
-      - dsn-redis-conf:/usr/local/etc/redis/redis.conf
+      - dsn-redis-data:/data
+      - dsn-redis-conf:/data
     networks:
       - dsn-net
     restart: always
