@@ -20,7 +20,7 @@ import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.formatCurrentDutyPair
-import dev.d1s.dsn.util.requireInitializedGroupChatInfo
+import dev.d1s.dsn.util.requireInitializedGroupChat
 import dev.d1s.dsn.util.withTitle
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
@@ -39,7 +39,7 @@ class GetCurrentDutyPairCommand : Command, KoinComponent {
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireInitializedGroupChatInfo(groupChatService, message) {
+        requireInitializedGroupChat(groupChatService, message) {
             val entities = withTitle(Emoji.BUSTS_IN_SILHOUETTE, "Текущая дежурная пара:") {
                 formatCurrentDutyPair(dutyPairService)
             }

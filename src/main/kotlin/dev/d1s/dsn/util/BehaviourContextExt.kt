@@ -42,7 +42,7 @@ suspend inline fun <BC : BehaviourContext> BC.requireGroupChat(message: TextMess
     }
 }
 
-suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfo(
+suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChat(
     groupChatService: GroupChatService,
     message: TextMessage,
     block: suspend BC.(GroupChatInfo) -> Unit
@@ -84,18 +84,6 @@ suspend fun <BC : BehaviourContext> BC.requireOwner(
         val noPermissionContent = makeTitle(Emoji.CROSS_MARK, "Нет прав.")
 
         reply(message, noPermissionContent)
-    }
-}
-
-suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfoAndOwner(
-    groupChatService: GroupChatService,
-    message: TextMessage,
-    block: suspend BC.(GroupChatInfo, UserId) -> Unit
-) {
-    requireInitializedGroupChatInfo(groupChatService, message) { groupChatInfo ->
-        requireOwner(groupChatService, message) { ownerId ->
-            block(groupChatInfo, ownerId)
-        }
     }
 }
 
