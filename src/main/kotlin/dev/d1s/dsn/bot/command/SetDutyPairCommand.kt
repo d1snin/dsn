@@ -50,9 +50,7 @@ class SetDutyPairCommand : Command, KoinComponent {
 
             val indexMessage = waitTextMessage().first()
 
-            val index = indexMessage.content.text.trim().toIntOrNull()?.let {
-                it - 1
-            }
+            val index = indexMessage.content.text.trim().toIntOrNull()?.minus(1)
 
             val dutyPair = index?.let {
                 dutyPairs.getOrNull(it)
