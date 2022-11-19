@@ -16,13 +16,13 @@
 
 package dev.d1s.dsn.util
 
+import dev.d1s.dsn.entity.GroupChatInfo
 import dev.d1s.dsn.service.GroupChatService
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
 import dev.inmo.tgbotapi.extensions.utils.fromUserOrNull
 import dev.inmo.tgbotapi.types.BotCommand
-import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.chat.GroupChat
 import dev.inmo.tgbotapi.types.message.content.TextMessage
@@ -45,7 +45,7 @@ suspend inline fun <BC : BehaviourContext> BC.requireGroupChat(message: TextMess
 suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfo(
     groupChatService: GroupChatService,
     message: TextMessage,
-    block: suspend BC.(ChatId) -> Unit
+    block: suspend BC.(GroupChatInfo) -> Unit
 ) {
     val thisChatId = message.chat.id.chatId
 
@@ -55,10 +55,8 @@ suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatInfo(
         return
     }
 
-    val groupChatId = initializedGroupChat.groupChatId
-
-    if (groupChatId.chatId == thisChatId) {
-        block(groupChatId)
+    if (initializedGroupChat.groupChatId.chatId == thisChatId) {
+        block(initializedGroupChat)
     } else {
         val wrongChatContent = makeTitle(Emoji.CROSS_MARK, "Этот чат не подходит для исполнения запрашиваемой команды.")
 
