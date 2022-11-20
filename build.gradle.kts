@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 /*
  * Copyright 2022 Mikhail Titov
  *
@@ -16,6 +14,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm")
     kotlin("kapt")
@@ -29,12 +29,11 @@ group = projectGroup
 version = projectVersion
 
 application {
-    mainClass.set("dev.d1s.dsn.ApplicationKt")
+    mainClass.set("dev.d1s.dsn.MainKt")
 }
 
 repositories {
     mavenCentral()
-    maven(url = "https://jitpack.io")
 }
 
 dependencies {
