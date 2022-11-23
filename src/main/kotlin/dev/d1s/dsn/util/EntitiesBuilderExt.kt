@@ -18,7 +18,7 @@ package dev.d1s.dsn.util
 
 import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.service.DutyPairService
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.utils.*
 
 fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
     bold("1.")

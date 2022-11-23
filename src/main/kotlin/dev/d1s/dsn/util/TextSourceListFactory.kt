@@ -16,7 +16,7 @@
 
 package dev.d1s.dsn.util
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.utils.*
 
 fun makeTitle(emoji: String, title: String) = buildEntities {
     title(emoji, title)
