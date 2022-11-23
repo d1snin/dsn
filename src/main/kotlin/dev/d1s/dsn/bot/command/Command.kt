@@ -29,14 +29,4 @@ interface Command {
     suspend fun BehaviourContext.onCommand(message: TextMessage)
 
     fun toBotCommand() = BotCommand(name, description)
-
-//    val Init = BotCommand("init", "Инициализировать чат.")
-//
-//    val GetCurrentDutyPair = BotCommand("current", "Показать текущих дежурных.")
-//
-//    val GetDutyPairs = BotCommand("pairs", "Показать все дежурные пары.")
-//
-//    val Switch = BotCommand("switch", "Переключиться на следующую дежурную пару.")
-//
-//    val Postpone = BotCommand("postpone", "Запланировать дежурство текущей пары на следующую итерацию.")
 }
