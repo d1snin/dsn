@@ -81,7 +81,7 @@ suspend fun <BC : BehaviourContext> BC.requireOwner(
     if (ownerId.chatId == thisUser) {
         block(ownerId)
     } else {
-        val noPermissionContent = makeTitle(Emoji.CROSS_MARK, "Нет прав.")
+        val noPermissionContent = makeTitle(Emoji.CROSS_MARK, "Нет привилегий.")
 
         reply(message, noPermissionContent)
     }
