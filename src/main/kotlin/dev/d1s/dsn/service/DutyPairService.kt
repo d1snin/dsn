@@ -79,7 +79,11 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     override suspend fun switchDutyPair() {
-        val dutyPairIndex = getPostponedDutyPairIndex() ?: run {
+        val postponedDutyPairIndex = getPostponedDutyPairIndex()?.apply {
+            clearPostponedDutyPairIndex()
+        }
+
+        val dutyPairIndex = postponedDutyPairIndex ?: run {
             val currentDutyPairIndex = getCurrentDutyPairIndex()
 
             getNextDutyPairIndex(currentDutyPairIndex)
@@ -126,6 +130,10 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
     private suspend fun setPostponedDutyPairIndex(dutyPairIndex: DutyPairIndex) {
         redis.setAndPersist(Key.POSTPONED_DUTY_PAIR_INDEX, dutyPairIndex.toString())
+    }
+
+    private suspend fun clearPostponedDutyPairIndex() {
+        redis.del(Key.POSTPONED_DUTY_PAIR_INDEX)
     }
 
     private fun getNextDutyPairIndex(current: DutyPairIndex): DutyPairIndex {
