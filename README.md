@@ -78,7 +78,7 @@ docker-compose -f ./docker/docker-compose.yml up --build
 ### Лицензия
 
 ```
-   Copyright 2022 Mikhail Titov
+   Copyright 2022-2023 Mikhail Titov
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
