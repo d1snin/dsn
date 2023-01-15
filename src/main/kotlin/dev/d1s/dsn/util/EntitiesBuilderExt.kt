@@ -17,7 +17,6 @@
 package dev.d1s.dsn.util
 
 import dev.d1s.dsn.entity.DutyPair
-import dev.d1s.dsn.service.DutyPairService
 import dev.inmo.tgbotapi.utils.*
 
 fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
@@ -28,20 +27,25 @@ fun EntitiesBuilder.formatDutyPair(dutyPair: DutyPair) {
     regular(" ${dutyPair.secondStudent}")
 }
 
-fun EntitiesBuilder.formatDutyPairs(dutyPairs: List<DutyPair>, indexed: Boolean = false) {
+fun EntitiesBuilder.formatDutyPairs(
+    dutyPairs: List<DutyPair>,
+    currentDutyPair: DutyPair? = null,
+    indexed: Boolean = false
+) {
     dutyPairs.forEachIndexed { index, dutyPair ->
         if (indexed) {
             boldln("${index + 1})")
         }
+
         formatDutyPair(dutyPair)
+
+        if (dutyPair == currentDutyPair) {
+            regular("\n ")
+            bold("(текущая дежурная пара)")
+        }
+
         doubleNewLine()
     }
-}
-
-suspend fun EntitiesBuilder.formatCurrentDutyPair(dutyPairService: DutyPairService) {
-    val currentDutyPair = dutyPairService.getCurrentDutyPair()
-
-    formatDutyPair(currentDutyPair)
 }
 
 fun EntitiesBuilder.doubleNewLine() {

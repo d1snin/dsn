@@ -19,7 +19,7 @@ package dev.d1s.dsn.bot.command
 import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
-import dev.d1s.dsn.util.formatCurrentDutyPair
+import dev.d1s.dsn.util.formatDutyPair
 import dev.d1s.dsn.util.requireInitializedGroupChatOrOwner
 import dev.d1s.dsn.util.withTitle
 import dev.inmo.tgbotapi.extensions.api.send.reply
@@ -40,8 +40,10 @@ class GetCurrentDutyPairCommand : Command, KoinComponent {
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireInitializedGroupChatOrOwner(groupChatService, message) {
+            val currentDutyPairCommand = dutyPairService.getCurrentDutyPair()
+
             val currentDutyPair = withTitle(Emoji.BUSTS_IN_SILHOUETTE, "Текущая дежурная пара:") {
-                formatCurrentDutyPair(dutyPairService)
+                formatDutyPair(currentDutyPairCommand)
             }
 
             reply(message, currentDutyPair)
