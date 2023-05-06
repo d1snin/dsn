@@ -31,9 +31,7 @@ import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineK
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.utils.matrix
 import dev.inmo.tgbotapi.utils.row
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -123,14 +121,10 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
             sendMessage(chatId, entities, replyMarkup = markup)
 
-            coroutineScope {
-                launch {
-                    val callback = waitDataCallbackQuery().first().data
+            val callback = waitDataCallbackQuery().first().data
 
-                    if (callback == SWITCH_CALLBACK_DATA) {
-                        switchDutyPair()
-                    }
-                }
+            if (callback == SWITCH_CALLBACK_DATA) {
+                switchDutyPair()
             }
         }
     }
