@@ -25,7 +25,7 @@ import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
-import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviour
+import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPolling
 import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
@@ -110,7 +110,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
             formatDutyPair(dutyPair)
         }
 
-        bot.requestExecutor.buildBehaviour {
+        bot.requestExecutor.buildBehaviourWithLongPolling {
             val markup = InlineKeyboardMarkup(
                 matrix {
                     row {
