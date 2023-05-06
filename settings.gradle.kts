@@ -23,7 +23,6 @@ pluginManagement {
         val versionsPluginVersion: String by settings
 
         kotlin("jvm") version kotlinVersion
-        kotlin("kapt") version kotlinVersion
 
         id("com.github.ben-manes.versions") version versionsPluginVersion
     }
