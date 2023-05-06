@@ -20,7 +20,7 @@ import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.makeTitle
-import dev.d1s.dsn.util.requireOwner
+import dev.d1s.dsn.util.requireInitializedGroupChatAndAdmin
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
@@ -38,7 +38,7 @@ class PostponeDutyPairCommand : Command, KoinComponent {
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireOwner(groupChatService, message) {
+        requireInitializedGroupChatAndAdmin(groupChatService, message) {
             dutyPairService.postponeCurrentDutyPair()
 
             val dutyPairPostponedContent = makeTitle(

@@ -16,23 +16,16 @@
 
 package dev.d1s.dsn.entity
 
-import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.IdChatIdentifier
-import dev.inmo.tgbotapi.types.UserId
-
-private const val SEPARATOR = ":"
 
 data class GroupChatInfo(
-    val groupChatId: IdChatIdentifier,
-    val ownerId: UserId
+    val groupChatId: IdChatIdentifier
 ) {
-    fun serialize() = "${groupChatId.chatId}$SEPARATOR${ownerId.chatId}"
+    fun serialize() = groupChatId.chatId.toString()
 
     companion object {
         fun deserialize(groupChatInfo: String) =
-            groupChatInfo.split(SEPARATOR, limit = 2).let { pieces ->
-                GroupChatInfo(ChatId(pieces[0].toLong()), ChatId(pieces[1].toLong()))
-            }
+            GroupChatInfo(IdChatIdentifier(groupChatInfo.toLong()))
     }
 }
 

@@ -20,7 +20,7 @@ import dev.d1s.dsn.service.DutyPairService
 import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.formatDutyPairs
-import dev.d1s.dsn.util.requireInitializedGroupChatOrOwner
+import dev.d1s.dsn.util.requireInitializedGroupChat
 import dev.d1s.dsn.util.withTitle
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
@@ -39,7 +39,7 @@ class GetDutyPairsCommand : Command, KoinComponent {
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireInitializedGroupChatOrOwner(groupChatService, message) {
+        requireInitializedGroupChat(groupChatService, message) {
             val dutyPairs = dutyPairService.getDutyPairs()
             val currentDutyPair = dutyPairService.getCurrentDutyPair()
 

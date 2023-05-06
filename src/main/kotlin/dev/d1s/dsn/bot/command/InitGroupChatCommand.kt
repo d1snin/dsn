@@ -18,10 +18,11 @@ package dev.d1s.dsn.bot.command
 
 import dev.d1s.dsn.entity.GroupChatInfo
 import dev.d1s.dsn.entity.UserAuthenticationToken
-import dev.d1s.dsn.service.*
+import dev.d1s.dsn.service.AuthenticationService
+import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.makeTitle
-import dev.d1s.dsn.util.requireGroupChat
+import dev.d1s.dsn.util.requireGroupChatAndAdmin
 import dev.inmo.tgbotapi.abstracts.FromUser
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
@@ -46,30 +47,30 @@ class InitGroupChatCommand : Command, KoinComponent {
 
     @OptIn(PreviewFeature::class)
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireGroupChat(message) {
+        requireGroupChatAndAdmin(message) {
             if (groupChatService.isGroupChatInfoInitialized()) {
                 replyChatAlreadyInitialized(message)
 
-                return@onCommand
+                return@requireGroupChatAndAdmin
             }
 
-            val owner = message.fromUserOrNull() ?: run {
+            val user = message.fromUserOrNull() ?: run {
                 replyInvalidUser(message)
 
-                return@onCommand
+                return@requireGroupChatAndAdmin
             }
 
-            val (token, authKeyMessage) = retrieveAuthToken(message, owner)
+            val (token, authKeyMessage) = retrieveAuthToken(message, user)
 
             val authenticationResult = authenticationService.authenticate(token)
 
             if (!authenticationResult.authenticated) {
                 replyInvalidToken(authKeyMessage)
 
-                return@onCommand
+                return@requireGroupChatAndAdmin
             }
 
-            val groupChatInfo = GroupChatInfo(message.chat.id, owner.user.id)
+            val groupChatInfo = GroupChatInfo(message.chat.id)
 
             groupChatService.setGroupChatInfo(groupChatInfo)
 
@@ -93,16 +94,17 @@ class InitGroupChatCommand : Command, KoinComponent {
 
     @OptIn(PreviewFeature::class)
     private suspend fun BehaviourContext.retrieveAuthToken(
-        contextMessage: TextMessage, owner: FromUser
+        contextMessage: TextMessage,
+        user: FromUser
     ): Pair<UserAuthenticationToken, TextMessage> {
-        val ownerId = owner.user.id
+        val userId = user.user.id
 
         val sendAuthKeyContent = makeTitle(Emoji.LOCKED_WITH_KEY, "Отправьте авторизационный ключ.")
 
         reply(contextMessage, sendAuthKeyContent)
 
         val authKeyMessage = waitTextMessage().filter { message ->
-            message.fromUserOrNull()?.from?.id == ownerId
+            message.fromUserOrNull()?.from?.id == userId
         }.first()
 
         val authKey = authKeyMessage.content.text

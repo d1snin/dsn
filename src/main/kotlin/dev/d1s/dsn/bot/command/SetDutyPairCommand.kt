@@ -39,7 +39,7 @@ class SetDutyPairCommand : Command, KoinComponent {
     private val dutyPairService by inject<DutyPairService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireOwner(groupChatService, message) {
+        requireInitializedGroupChatAndAdmin(groupChatService, message) {
             val dutyPairs = dutyPairService.getDutyPairs()
 
             val selectDutyPair = withTitle(Emoji.ARROW_DOWN, "Выберите дежурную пару.") {
@@ -59,7 +59,7 @@ class SetDutyPairCommand : Command, KoinComponent {
 
                 reply(message, invalidDutyPair)
 
-                return@requireOwner
+                return@requireInitializedGroupChatAndAdmin
             }
 
             dutyPairService.setCurrentDutyPair(DutyPairIndex(index))

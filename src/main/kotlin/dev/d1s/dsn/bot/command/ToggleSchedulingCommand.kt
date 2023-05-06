@@ -21,7 +21,7 @@ import dev.d1s.dsn.service.GroupChatService
 import dev.d1s.dsn.service.SchedulingService
 import dev.d1s.dsn.util.Emoji
 import dev.d1s.dsn.util.makeTitle
-import dev.d1s.dsn.util.requireOwner
+import dev.d1s.dsn.util.requireInitializedGroupChatAndAdmin
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
@@ -42,7 +42,7 @@ class ToggleSchedulingCommand : Command, KoinComponent {
     private val schedulingService by inject<SchedulingService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
-        requireOwner(groupChatService, message) {
+        requireInitializedGroupChatAndAdmin(groupChatService, message) {
             if (paused.get()) {
                 schedulingService.resumeJob(AnnounceDutyPairJob.key)
                 paused.set(false)

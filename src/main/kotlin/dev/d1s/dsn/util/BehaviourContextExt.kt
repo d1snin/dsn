@@ -17,42 +17,29 @@
 package dev.d1s.dsn.util
 
 import dev.d1s.dsn.service.GroupChatService
+import dev.inmo.tgbotapi.extensions.api.chat.get.getChatAdministrators
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
-import dev.inmo.tgbotapi.extensions.utils.fromUserOrNull
+import dev.inmo.tgbotapi.extensions.utils.asPublicChat
+import dev.inmo.tgbotapi.extensions.utils.extensions.raw.from
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.chat.GroupChat
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.utils.PreviewFeature
+import dev.inmo.tgbotapi.utils.RiskFeature
 
 suspend fun <BC : BehaviourContext> BC.onCommand(botCommand: BotCommand, receiver: suspend BC.(TextMessage) -> Unit) {
     onCommand(botCommand.command, scenarioReceiver = receiver)
 }
 
-suspend inline fun <BC : BehaviourContext> BC.requireGroupChat(message: TextMessage, block: BC.() -> Unit) {
-    if (message.chat !is GroupChat) {
-        val notGroupChatContent = makeTitle(Emoji.CROSS_MARK, "Это не групповой чат.")
-
-        reply(message, notGroupChatContent)
-    } else {
-        block()
-    }
-}
-
-suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatOrOwner(
+suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChat(
     groupChatService: GroupChatService,
     message: TextMessage,
     block: suspend BC.() -> Unit
 ) {
     val initializedGroupChat = groupChatService.getGroupChatInfo() ?: run {
         commandNotAvailable(message)
-
-        return
-    }
-
-    if (message.isFromOwner(groupChatService)) {
-        block()
 
         return
     }
@@ -68,18 +55,40 @@ suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatOrOwner(
     }
 }
 
-suspend fun <BC : BehaviourContext> BC.requireOwner(
+suspend fun <BC : BehaviourContext> BC.requireInitializedGroupChatAndAdmin(
     groupChatService: GroupChatService,
     message: TextMessage,
     block: suspend BC.() -> Unit
 ) {
-    groupChatService.getGroupChatInfo()?.ownerId ?: run {
-        commandNotAvailable(message)
-
-        return
+    requireInitializedGroupChat(groupChatService, message) {
+        requireAdmin(message, block)
     }
+}
 
-    if (message.isFromOwner(groupChatService)) {
+suspend fun <BC : BehaviourContext> BC.requireGroupChatAndAdmin(
+    message: TextMessage,
+    block: suspend BC.() -> Unit
+) {
+    requireGroupChat(message) {
+        requireAdmin(message, block)
+    }
+}
+
+private suspend inline fun <BC : BehaviourContext> BC.requireGroupChat(message: TextMessage, block: BC.() -> Unit) {
+    if (message.chat !is GroupChat) {
+        val notGroupChatContent = makeTitle(Emoji.CROSS_MARK, "Это не групповой чат.")
+
+        reply(message, notGroupChatContent)
+    } else {
+        block()
+    }
+}
+
+private suspend fun <BC : BehaviourContext> BC.requireAdmin(
+    message: TextMessage,
+    block: suspend BC.() -> Unit
+) {
+    if (isFromAdmin(message)) {
         block()
     } else {
         val noPermissionContent = makeTitle(Emoji.CROSS_MARK, "Нет привилегий.")
@@ -88,15 +97,15 @@ suspend fun <BC : BehaviourContext> BC.requireOwner(
     }
 }
 
-@OptIn(PreviewFeature::class)
-private suspend fun TextMessage.isFromOwner(
-    groupChatService: GroupChatService
+@OptIn(PreviewFeature::class, RiskFeature::class)
+private suspend fun BehaviourContext.isFromAdmin(
+    message: TextMessage
 ): Boolean {
-    val thisUser = fromUserOrNull()?.user?.id?.chatId
+    val chat = message.chat.asPublicChat() ?: error("Not a public chat")
+    val user = message.from?.id ?: error("Not a user")
+    val administrators = this.getChatAdministrators(chat).map { it.user.id }
 
-    val ownerId = groupChatService.getGroupChatInfo()?.ownerId
-
-    return ownerId?.chatId == thisUser
+    return user in administrators
 }
 
 private suspend fun <BC : BehaviourContext> BC.commandNotAvailable(message: TextMessage) {
