@@ -25,6 +25,15 @@ import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviour
+import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
+import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
+import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
+import dev.inmo.tgbotapi.utils.matrix
+import dev.inmo.tgbotapi.utils.row
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -103,7 +112,27 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
             formatDutyPair(dutyPair)
         }
 
-        bot.requestExecutor.sendMessage(chatId, entities)
+        bot.requestExecutor.buildBehaviour {
+            val markup = InlineKeyboardMarkup(
+                matrix {
+                    row {
+                        +CallbackDataInlineKeyboardButton("${Emoji.FAST_FORWARD} Следующая пара", SWITCH_CALLBACK_DATA)
+                    }
+                }
+            )
+
+            sendMessage(chatId, entities, replyMarkup = markup)
+
+            coroutineScope {
+                launch {
+                    val callback = waitDataCallbackQuery().first().data
+
+                    if (callback == SWITCH_CALLBACK_DATA) {
+                        switchDutyPair()
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun getCurrentDutyPairIndex(): DutyPairIndex {
@@ -155,5 +184,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     private companion object {
 
         private const val FIRST_DUTY_PAIR_INDEX = 0
+
+        private const val SWITCH_CALLBACK_DATA = "switch"
     }
 }
