@@ -26,13 +26,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'liberica'
-      - name: Build duty-students-notifier
+      - name: Build dsn
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
           arguments: distTar
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: duty-students-notifier.tar
+          name: dsn.tar
           path: |
             ./build/distributions

@@ -1,8 +1,8 @@
 [![wakatime](https://wakatime.com/badge/user/e4446807-0aa6-4ba9-92ea-2a7632bc44c9/project/702fa278-ec20-4b56-9552-bf1387ffec62.svg)](https://wakatime.com/badge/user/e4446807-0aa6-4ba9-92ea-2a7632bc44c9/project/702fa278-ec20-4b56-9552-bf1387ffec62)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Java CI with Gradle](https://github.com/d1snin/duty-students-notifier/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/d1snin/duty-students-notifier/actions/workflows/gradle.yml)
+[![Java CI with Gradle](https://github.com/d1snin/dsn/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/d1snin/dsn/actions/workflows/gradle.yml)
 
-### duty-students-notifier
+### dsn
 
 Данный проект реализует достаточно примитивную логику и используется
 только в моих локальных кругах. Приложение запускается на серверной

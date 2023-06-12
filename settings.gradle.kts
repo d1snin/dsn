@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = "duty-students-notifier"
+rootProject.name = "dsn"
 
 pluginManagement {
     plugins {
