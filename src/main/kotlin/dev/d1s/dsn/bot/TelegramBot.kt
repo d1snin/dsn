@@ -25,7 +25,9 @@ import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
 import dev.inmo.tgbotapi.extensions.api.telegramBot
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPolling
+import dev.inmo.tgbotapi.extensions.behaviour_builder.createSubContext
 import io.ktor.client.plugins.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -36,9 +38,14 @@ interface TelegramBot {
     val requestExecutor: RequestsExecutor
 
     suspend fun startTelegramBot(): Job
+
+    suspend fun withBehaviourContext(block: suspend BehaviourContext.() -> Unit)
 }
 
 class TelegramBotImpl : TelegramBot, KoinComponent {
+
+    override val requestExecutor
+        get() = internalRequestExecutor ?: error("Request executor is not yet initialized.")
 
     private val config by inject<ApplicationConfig>()
 
@@ -48,9 +55,7 @@ class TelegramBotImpl : TelegramBot, KoinComponent {
 
     private var internalRequestExecutor: RequestsExecutor? = null
 
-    override val requestExecutor
-        get() = internalRequestExecutor ?: error("Request executor is not yet initialized.")
-
+    private var behaviourContext: BehaviourContext? = null
 
     override suspend fun startTelegramBot(): Job {
         log.i {
@@ -68,10 +73,18 @@ class TelegramBotImpl : TelegramBot, KoinComponent {
         internalRequestExecutor = bot
 
         val job = bot.buildBehaviourWithLongPolling(defaultExceptionsHandler = ::handleException) {
+            behaviourContext = this
+
             configureCommands()
         }
 
         return job
+    }
+
+    override suspend fun withBehaviourContext(block: suspend BehaviourContext.() -> Unit) {
+        val context = behaviourContext?.createSubContext() ?: error("Behaviour context is not available")
+
+        block(context)
     }
 
     private suspend fun BehaviourContext.configureCommands() {
@@ -108,6 +121,10 @@ class TelegramBotImpl : TelegramBot, KoinComponent {
                 log.d {
                     "Something went wrong: ${throwable.cause?.message ?: "no message"}"
                 }
+            }
+
+            is CancellationException -> {
+                // ignore
             }
 
             else -> {

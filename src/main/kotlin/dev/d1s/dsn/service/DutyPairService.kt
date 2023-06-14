@@ -25,6 +25,12 @@ import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
+import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
+import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
+import dev.inmo.tgbotapi.utils.matrix
+import dev.inmo.tgbotapi.utils.row
+import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.lighthousegames.logging.logging
@@ -102,15 +108,31 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     }
 
     private suspend fun announceDutyPair(dutyPairIndex: DutyPairIndex) {
-        val chatId = groupChatService.getGroupChatInfo().orThrow().groupChatId
+        bot.withBehaviourContext {
+            val chatId = groupChatService.getGroupChatInfo().orThrow().groupChatId
 
-        val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
-            val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]
+            val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
+                val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]
 
-            formatDutyPair(dutyPair)
+                formatDutyPair(dutyPair)
+            }
+
+            val markup = InlineKeyboardMarkup(
+                matrix {
+                    row {
+                        +CallbackDataInlineKeyboardButton("${Emoji.FAST_FORWARD} Следующая пара", SWITCH_CALLBACK_DATA)
+                    }
+                }
+            )
+
+            sendMessage(chatId, entities, replyMarkup = markup)
+
+            val callback = waitDataCallbackQuery().filterIsAdmin(this, chatId).first()
+
+            if (callback.data == SWITCH_CALLBACK_DATA) {
+                switchDutyPair()
+            }
         }
-
-        bot.requestExecutor.sendMessage(chatId, entities)
     }
 
     private suspend fun getCurrentDutyPairIndex(): DutyPairIndex {
@@ -162,5 +184,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     private companion object {
 
         private const val FIRST_DUTY_PAIR_INDEX = 0
+
+        private const val SWITCH_CALLBACK_DATA = "switch"
     }
 }
