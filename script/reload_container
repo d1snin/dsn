@@ -2,5 +2,5 @@
 
 ./gradlew installDist
 docker-compose -f ./docker/docker-compose.yml down
-docker volume prune -f
+docker volume rm docker_dsn-redis-data
 docker-compose -f ./docker/docker-compose.yml up --build
