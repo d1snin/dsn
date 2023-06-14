@@ -27,7 +27,6 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.atomic.AtomicBoolean
 
 class ToggleSchedulingCommand : Command, KoinComponent {
 
@@ -35,24 +34,22 @@ class ToggleSchedulingCommand : Command, KoinComponent {
 
     override val description = "Включить/выключить автоматическое переключение дежурных пар."
 
-    private val paused = AtomicBoolean(false)
-
     private val groupChatService by inject<GroupChatService>()
 
     private val schedulingService by inject<SchedulingService>()
 
     override suspend fun BehaviourContext.onCommand(message: TextMessage) {
         requireInitializedGroupChatAndAdmin(groupChatService, message) {
-            if (paused.get()) {
+            val paused = schedulingService.getPausedJobs().jobs.contains(AnnounceDutyPairJob.key)
+
+            if (paused) {
                 schedulingService.resumeJob(AnnounceDutyPairJob.key)
-                paused.set(false)
 
                 val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение дежурных включено.")
 
                 reply(message, content)
             } else {
                 schedulingService.pauseJob(AnnounceDutyPairJob.key)
-                paused.set(true)
 
                 val content = makeTitle(Emoji.CHECK_MARK, "Автоматическое переключение дежурных выключено.")
 

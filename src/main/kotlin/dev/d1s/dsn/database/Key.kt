@@ -23,4 +23,6 @@ object Key {
     const val POSTPONED_DUTY_PAIR_INDEX = "postponed_duty_pair_index"
 
     const val GROUP_CHAT_INFO = "group_chat_info"
+
+    const val PAUSED_JOBS = "paused_jobs"
 }
