@@ -24,7 +24,7 @@ import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
-import dev.inmo.tgbotapi.extensions.api.answers.answerCallbackQuery
+import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
@@ -64,6 +64,27 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     private val config by inject<ApplicationConfig>()
 
     private val bot by inject<TelegramBot>()
+
+    private val switchMarkup =
+        InlineKeyboardMarkup(
+            matrix {
+                row {
+                    +CallbackDataInlineKeyboardButton("${Emoji.FAST_FORWARD} Следующая пара", SWITCH_CALLBACK_DATA)
+                }
+            }
+        )
+
+    private val successMarkup =
+        InlineKeyboardMarkup(
+            matrix {
+                row {
+                    +CallbackDataInlineKeyboardButton(
+                        "${Emoji.CHECK_MARK} Переключили пару",
+                        SWITCH_SUCCESS_CALLBACK_DATA
+                    )
+                }
+            }
+        )
 
     private val log = logging()
 
@@ -118,23 +139,20 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
                 formatDutyPair(dutyPair)
             }
 
-            val markup = InlineKeyboardMarkup(
-                matrix {
-                    row {
-                        +CallbackDataInlineKeyboardButton("${Emoji.FAST_FORWARD} Следующая пара", SWITCH_CALLBACK_DATA)
-                    }
-                }
-            )
+            val message = bot.sendMessage(chatId, entities, replyMarkup = switchMarkup)
 
-            sendMessage(chatId, entities, replyMarkup = markup)
-
-            val callback = waitDataCallbackQuery().filterIsAdmin(this, chatId).first()
-
-            if (callback.data == SWITCH_CALLBACK_DATA) {
-                switchDutyPair()
+            waitDataCallbackQuery().filterIsAdmin(this, chatId).first {
+                it.data == SWITCH_CALLBACK_DATA
             }
 
-            bot.answerCallbackQuery(callback, "${Emoji.CHECK_MARK} Следующая пара задана")
+            switchDutyPair()
+
+            bot.editMessageReplyMarkup(message, successMarkup)
+
+            waitDataCallbackQuery().first {
+                it.data == SWITCH_SUCCESS_CALLBACK_DATA
+            }
+            bot.editMessageReplyMarkup(message, successMarkup)
         }
     }
 
@@ -189,5 +207,6 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
         private const val FIRST_DUTY_PAIR_INDEX = 0
 
         private const val SWITCH_CALLBACK_DATA = "switch"
+        private const val SWITCH_SUCCESS_CALLBACK_DATA = "switch_success"
     }
 }
