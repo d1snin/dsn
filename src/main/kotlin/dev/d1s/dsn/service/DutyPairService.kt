@@ -130,11 +130,11 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
             val callback = waitDataCallbackQuery().filterIsAdmin(this, chatId).first()
 
-            bot.answerCallbackQuery(callback, "${Emoji.CHECK_MARK} Следующая пара задана")
-
             if (callback.data == SWITCH_CALLBACK_DATA) {
                 switchDutyPair()
             }
+
+            bot.answerCallbackQuery(callback, "${Emoji.CHECK_MARK} Следующая пара задана")
         }
     }
 
