@@ -24,6 +24,7 @@ import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
+import dev.inmo.tgbotapi.extensions.api.answers.answerCallbackQuery
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
@@ -128,6 +129,8 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
             sendMessage(chatId, entities, replyMarkup = markup)
 
             val callback = waitDataCallbackQuery().filterIsAdmin(this, chatId).first()
+
+            bot.answerCallbackQuery(callback, "${Emoji.CHECK_MARK} Следующая пара задана")
 
             if (callback.data == SWITCH_CALLBACK_DATA) {
                 switchDutyPair()
