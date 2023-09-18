@@ -84,9 +84,7 @@ class TelegramBotImpl : TelegramBot, KoinComponent {
     override suspend fun withBehaviourContext(block: suspend BehaviourContext.() -> Unit) {
         val context = behaviourContext?.createSubContext() ?: error("Behaviour context is not available")
 
-        context.use {
-            block(context)
-        }
+        block(context)
     }
 
     private suspend fun BehaviourContext.configureCommands() {
