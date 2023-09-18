@@ -24,14 +24,7 @@ import dev.d1s.dsn.entity.DutyPair
 import dev.d1s.dsn.entity.DutyPairIndex
 import dev.d1s.dsn.entity.orThrow
 import dev.d1s.dsn.util.*
-import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
-import dev.inmo.tgbotapi.extensions.behaviour_builder.expectations.waitDataCallbackQuery
-import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
-import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
-import dev.inmo.tgbotapi.utils.matrix
-import dev.inmo.tgbotapi.utils.row
-import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.lighthousegames.logging.logging
@@ -64,27 +57,6 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     private val config by inject<ApplicationConfig>()
 
     private val bot by inject<TelegramBot>()
-
-    private val switchMarkup =
-        InlineKeyboardMarkup(
-            matrix {
-                row {
-                    +CallbackDataInlineKeyboardButton("${Emoji.FAST_FORWARD} Следующая пара", SWITCH_CALLBACK_DATA)
-                }
-            }
-        )
-
-    private val successMarkup =
-        InlineKeyboardMarkup(
-            matrix {
-                row {
-                    +CallbackDataInlineKeyboardButton(
-                        "${Emoji.CHECK_MARK} Переключили пару",
-                        SWITCH_SUCCESS_CALLBACK_DATA
-                    )
-                }
-            }
-        )
 
     private val log = logging()
 
@@ -139,20 +111,7 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
                 formatDutyPair(dutyPair)
             }
 
-            val message = bot.sendMessage(chatId, entities, replyMarkup = switchMarkup)
-
-            waitDataCallbackQuery().filterIsAdmin(this, chatId).first {
-                it.data == SWITCH_CALLBACK_DATA
-            }
-
-            switchDutyPair()
-
-            bot.editMessageReplyMarkup(message, successMarkup)
-
-            waitDataCallbackQuery().first {
-                it.data == SWITCH_SUCCESS_CALLBACK_DATA
-            }
-            bot.editMessageReplyMarkup(message, successMarkup)
+            bot.sendMessage(chatId, entities)
         }
     }
 
@@ -205,8 +164,5 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
     private companion object {
 
         private const val FIRST_DUTY_PAIR_INDEX = 0
-
-        private const val SWITCH_CALLBACK_DATA = "switch"
-        private const val SWITCH_SUCCESS_CALLBACK_DATA = "switch_success"
     }
 }
