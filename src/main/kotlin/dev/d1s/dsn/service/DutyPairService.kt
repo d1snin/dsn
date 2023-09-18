@@ -103,15 +103,17 @@ class DutyPairServiceImpl : DutyPairService, KoinComponent {
 
     private suspend fun announceDutyPair(dutyPairIndex: DutyPairIndex) {
         bot.withBehaviourContext {
-            val chatId = groupChatService.getGroupChatInfo().orThrow().groupChatId
+            use {
+                val chatId = groupChatService.getGroupChatInfo().orThrow().groupChatId
 
-            val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
-                val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]
+                val entities = withTitle(Emoji.REPEAT, "Дежурные на этот день:") {
+                    val dutyPair = config.parsedDutyPairs[dutyPairIndex.index]
 
-                formatDutyPair(dutyPair)
+                    formatDutyPair(dutyPair)
+                }
+
+                bot.sendMessage(chatId, entities)
             }
-
-            bot.sendMessage(chatId, entities)
         }
     }
 
